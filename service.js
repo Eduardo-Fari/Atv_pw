@@ -6,6 +6,6 @@ const server = http.createServer(async(req,res)=>{
 await rotas(req,res);
 });
 
-server.listen(3000, ()=>{
-    console.log("rodando em: http://localhost:3000")
+server.listen(4874, ()=>{
+    console.log("rodando em: http://localhost:4874");
 });
