@@ -1,0 +1,5 @@
+[
+  { "id": 1, "nome": "Teclado Mecânico", "categoria": "perifericos", "preco": 350 },
+  { "id": 2, "nome": "Mouse Gamer", "categoria": "perifericos", "preco": 200 },
+  { "id": 3, "nome": "Monitor 24 polegadas", "categoria": "monitores", "preco": 1200 }
+]
