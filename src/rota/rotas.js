@@ -37,7 +37,31 @@ module.exports = async(req,res)=>{
             return res.end('Erro Interno do Servidor');
             
         }
-    }else if (pathname.startsWith("/alunos/") && metodo === "PUT") {
+    }else if (pathname.startsWith("/alunos/") && method === "DELETE"){
+        const partes = pathname.split("/");
+        const idBuscado = partes[2];
+        try{
+            const arquivo = await fs.readFile('./src/public/aluno.json', 'utf8');
+            const alunos = JSON.parse(arquivo);
+
+            const indiceAluno = alunos.findIndex(aluno => aluno.id == idBuscado);
+            if(indiceAluno === -1){
+                res.writeHead(404, { 'Content-Type': 'application/json' });
+                return res.end(JSON.stringify({ erro: "Aluno não encontrado." }));
+            }
+            alunos.splice(indiceAluno,1);
+
+            await fs.writeFile('./src/public/aluno.json', JSON.stringify(alunos, null, 2));
+
+            res.writeHead(201, { 'Content-Type': 'application/json' });
+            return res.end(JSON.stringify({ mensagem: "Aluno deletado com sucesso!", alunos: alunos }));
+
+        }catch(error){
+            res.writeHead(400, { 'Content-Type': 'application/json' });
+                return res.end(JSON.stringify({ erro: "Erro ao processar a requisição ou JSON inválido." }));
+        }
+        
+    }else if (pathname.startsWith("/alunos/") && method === "PUT") {
         
         
         const partes = pathname.split("/");
@@ -51,7 +75,7 @@ module.exports = async(req,res)=>{
         req.on('end', async () => {
             try {
                 const dadosRecebidos = JSON.parse(body);
-                const { nome, turma } = dadosRecebidos;
+                const { nome, turma, curso, idade } = dadosRecebidos;
 
                 const arquivo = await fs.readFile('./src/public/aluno.json', 'utf8');
                 const alunos = JSON.parse(arquivo);
@@ -64,11 +88,16 @@ module.exports = async(req,res)=>{
                     return res.end(JSON.stringify({ erro: "Aluno não encontrado." }));
                 }
 
-                
+                if (!nome || !turma || nome.trim() === "" || turma.trim() === ""|| idade<0 ||!idade ) {
+                    res.writeHead(400, { 'Content-Type': 'application/json' });
+                    return res.end(JSON.stringify({ erro: "Os campos 'nome', 'turma' e 'idade' são obrigatórios e não podem estar vazios. E a idade não pode ser negativa" }));
+                }
                 alunos[indiceAluno] = {
                     id: alunos[indiceAluno].id,
                     nome: nome ? nome.trim() : alunos[indiceAluno].nome,
-                    turma: turma ? turma.trim() : alunos[indiceAluno].turma
+                    turma: turma ? turma.trim() : alunos[indiceAluno].turma,
+                    curso: curso ? curso.trim() :alunos[indiceAluno].curso,
+                    idade: idade>0 ? idade : alunos[indiceAluno].idade
                 };
 
                
@@ -86,7 +115,7 @@ module.exports = async(req,res)=>{
                 return res.end(JSON.stringify({ erro: "Erro ao processar a requisição ou JSON inválido." }));
             }
         });
-    }else if (pathname === "/alunos" && metodo === "POST") {
+    }else if (pathname === "/alunos" && method === "POST") {
         let body = '';
 
        
@@ -99,12 +128,12 @@ module.exports = async(req,res)=>{
             try {
                 
                 const dadosRecebidos = JSON.parse(body);
-                const { nome, turma } = dadosRecebidos;
+                const { nome, turma, curso, idade } = dadosRecebidos;
 
                 
-                if (!nome || !turma || nome.trim() === "" || turma.trim() === "") {
+                if (!nome || !turma || nome.trim() === "" || turma.trim() === ""|| idade<0|| !idade) {
                     res.writeHead(400, { 'Content-Type': 'application/json' });
-                    return res.end(JSON.stringify({ erro: "Os campos 'nome' e 'turma' são obrigatórios e não podem estar vazios." }));
+                    return res.end(JSON.stringify({ erro: "Os campos 'nome', 'turma' e 'idade' são obrigatórios e não podem estar vazios. E a idade não pode ser negativos." }));
                 }
 
             
@@ -115,7 +144,10 @@ module.exports = async(req,res)=>{
                 const novoAluno = {
                     id: Date.now(), 
                     nome: nome.trim(),
-                    turma: turma.trim()
+                    turma: turma.trim(),
+                    curso: curso.trim(),
+                    idade: idade,
+                    
                 };
 
                 

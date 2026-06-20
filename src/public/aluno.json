@@ -8,16 +8,21 @@
   },
   {
     "id": 2,
-    "nome": "Jorel",
-    "idade": 18,
-    "curso": "Relações Humanas",
-    "Turma": "A"
+    "nome": "julio",
+    "turma": "C",
+    "curso": "Computação2",
+    "idade": 17
   },
   {
-    "id": 2,
+    "id": 3,
     "nome": "Nico",
     "idade": 17,
     "curso": "Música",
     "Turma": "B"
+  },
+  {
+    "id": 1781959118809,
+    "nome": "julio",
+    "turma": "C"
   }
 ]
