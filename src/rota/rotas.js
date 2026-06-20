@@ -17,6 +17,9 @@ module.exports = async(req,res)=>{
             return res.end('Erro Interno do Servidor');
             
         }
+    }if(url === "/" && method != "GET"){
+        res.writeHead(405, { 'Content-Type': 'application/json' });
+        return res.end(JSON.stringify({ erro: "Rota existente, mas o método escolhido não foi permitido" }));
     } else if(url === "/sobre" && method === "GET"){
          try{
             const data = await fs.readFile('./src/public/sobre.json');
@@ -27,16 +30,33 @@ module.exports = async(req,res)=>{
             return res.end('Erro Interno do Servidor');
             
         }
+    } else if(url === "/sobre" && method != "GET"){
+        res.writeHead(405, { 'Content-Type': 'application/json' });
+        return res.end(JSON.stringify({ erro: "Rota existente, mas o método escolhido não foi permitido" }));
+    } else if(url === "/pagina" && method === "GET"){
+        try{
+        const data = await fs.readFile("./src/public/pagina.html");
+        res.writeHead(200, {'Content-Type': 'text/html'});
+        res.end(data);
+        }catch(error){
+            res.statusCode = 500;
+            return res.end('Erro Interno do Servidor');
+        }
+    } else if(url === "/pagina" && method != "GET"){
+        res.writeHead(405, { 'Content-Type': 'application/json' });
+        return res.end(JSON.stringify({ erro: "Rota existente, mas o método escolhido não foi permitido" }));
     } else if(url === "/status" && method === "GET"){
          try{
             const data = await fs.readFile('./src/public/status.json');
             res.writeHead(200, {'Content-Type': 'application/json'});
             res.end(data);
         } catch(error){
-            res.statusCode = 500;
-            return res.end('Erro Interno do Servidor');
-            
+            res.writeHead(400, { 'Content-Type': 'application/json' });
+                return res.end(JSON.stringify({ erro: "Erro ao processar a requisição ou JSON inválido." }));
         }
+    } else if(url === "/status" && method != "GET"){
+        res.writeHead(405, { 'Content-Type': 'application/json' });
+        return res.end(JSON.stringify({ erro: "Rota existente, mas o método escolhido não foi permitido" }));
     }else if (pathname.startsWith("/alunos/") && method === "DELETE"){
         const partes = pathname.split("/");
         const idBuscado = partes[2];
@@ -193,6 +213,9 @@ module.exports = async(req,res)=>{
             res.statusCode = 500;
             return res.end('Erro Interno do Servidor');
         }
+    }else if (url.startsWith("/alunos") && method != "GET" && method != "PUT" && method != "POST" && method != "DELETE") {
+        res.writeHead(405, { 'Content-Type': 'application/json' });
+        return res.end(JSON.stringify({ erro: "Rota existente, mas o método escolhido não foi permitido" }));
     } else if (pathname === "/produtos" && method == "GET") {
         try {
             
@@ -217,6 +240,9 @@ module.exports = async(req,res)=>{
             res.statusCode = 500;
             return res.end('Erro Interno do Servidor ao ler produtos');
         }
+    } else if (pathname === "/produtos" && method != "GET") {
+        res.writeHead(405, { 'Content-Type': 'application/json' });
+        return res.end(JSON.stringify({ erro: "Rota existente, mas o método escolhido não foi permitido" }));
     } else if (url === "/api" && method === "GET"){
         try{
             const data = await fs.readFile('./data.json');
@@ -226,6 +252,9 @@ module.exports = async(req,res)=>{
             res.statusCode = 500;
             return res.end('Erro Interno do Servidor');
         }
+    } else if (pathname === "/api" && method != "GET") {
+        res.writeHead(405, { 'Content-Type': 'application/json' });
+        return res.end(JSON.stringify({ erro: "Rota existente, mas o método escolhido não foi permitido" }));
     }else {
         try{
             const data = await fs.readFile('./src/public/erro.html');
