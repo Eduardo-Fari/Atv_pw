@@ -66,7 +66,7 @@ module.exports = async(req,res)=>{
 
                 
                 alunos[indiceAluno] = {
-                    id: alunos[indiceAluno].id, // Garante que o ID não muda
+                    id: alunos[indiceAluno].id,
                     nome: nome ? nome.trim() : alunos[indiceAluno].nome,
                     turma: turma ? turma.trim() : alunos[indiceAluno].turma
                 };
@@ -113,7 +113,7 @@ module.exports = async(req,res)=>{
 
                
                 const novoAluno = {
-                    id: Date.now(), // Gera um ID numérico único baseado no milissegundo atual
+                    id: Date.now(), 
                     nome: nome.trim(),
                     turma: turma.trim()
                 };
